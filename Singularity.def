@@ -57,6 +57,9 @@ From: nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04
     # Since we mapped . to /workspace directly in %files, we are effectively in standalone mode.
     just install
     
+    # Disable runtime uv sync in entrypoint to ensure no runtime dependencies are installed/checked
+    sed -i 's/^uv sync/# uv sync/g' /workspace/bin/entrypoint.sh
+
     # Cleanup git folder if desired, following Dockerfile pattern
     rm -rf .git
 
