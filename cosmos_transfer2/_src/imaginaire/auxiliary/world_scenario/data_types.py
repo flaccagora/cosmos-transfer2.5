@@ -368,6 +368,7 @@ class DynamicObject:
 
         # Interpolation within range
         idx = np.searchsorted(self.timestamps, timestamp)
+        idx = max(idx, 1)  # when idx is 0, force it to 1 for interpolation logic below
 
         t0, t1 = self.timestamps[idx - 1], self.timestamps[idx]
         alpha = (timestamp - t0) / (t1 - t0) if t1 != t0 else 0.0
@@ -504,6 +505,9 @@ class SceneData:
     # Camera models and extrinsics
     camera_models: Dict[str, CameraBase] = field(default_factory=dict)
     camera_extrinsics: Dict[str, NDArray[np.float32]] = field(default_factory=dict)
+    # Per-camera per-frame poses (camera-to-world) - used when poses are stored directly per camera
+    # Shape: Dict[camera_name, (num_frames, 4, 4)]
+    camera_poses: Dict[str, NDArray[np.float32]] = field(default_factory=dict)
 
     # Static map elements
     lane_lines: List[LaneLine] = field(default_factory=list)
